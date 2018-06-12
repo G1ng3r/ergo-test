@@ -22,6 +22,8 @@ class SimpleSyncSpec extends TestKit(ActorSystem("BlockChainNodeSpec")) with Imp
       val nodeWithNewBlock = system.actorOf(BlockChainNodeActor.props(blockChainWithNewBlock, Seq.empty))
       val node = system.actorOf(BlockChainNodeActor.props(blockChainWithOnlyGenesis, Seq(nodeWithNewBlock)))
 
+      expectNoMessage(1 seconds)
+
       node ! GetBlockChain
 
       expectMsg(blockChainWithNewBlock)
@@ -98,7 +100,7 @@ class SimpleSyncSpec extends TestKit(ActorSystem("BlockChainNodeSpec")) with Imp
 
       val node = system.actorOf(BlockChainNodeActor.props(blockChainWithOnlyGenesis, Seq.empty))
 
-      nodesWithDifferentBlockChains.foreach(node => node ! ConnectTo(node))
+      nodesWithDifferentBlockChains.foreach(n => n ! ConnectTo(node))
 
       expectNoMessage(1.second)
 
